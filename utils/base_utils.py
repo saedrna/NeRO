@@ -88,7 +88,7 @@ def grey_repeats(img_raw):
     return img_raw
 
 def normalize_image(img,mask=None):
-    if mask is not None: img[np.logical_not(mask.astype(np.bool))]=127
+    if mask is not None: img[np.logical_not(mask.astype(bool))]=127
     img=(img.transpose([2,0,1]).astype(np.float32)-127.0)/128.0
     return torch.tensor(img,dtype=torch.float32)
 
@@ -682,7 +682,7 @@ def ransac_pnp(points_3d, points_2d, camera_matrix, method=cv2.SOLVEPNP_ITERATIV
     camera_matrix = camera_matrix.astype(np.float64)
     state, R_exp, t, inliers = cv2.solvePnPRansac(points_3d, points_2d, camera_matrix, dist_coeffs, flags=method,
                                                   iterationsCount=iter_num, reprojectionError=rep_error, confidence=0.999)
-    mask = np.zeros([points_3d.shape[0]], np.bool)
+    mask = np.zeros([points_3d.shape[0]], bool)
     if state:
         R, _ = cv2.Rodrigues(R_exp)
         mask[inliers[:,0]] = True

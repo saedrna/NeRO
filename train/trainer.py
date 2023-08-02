@@ -32,7 +32,7 @@ class Trainer:
         "train_log_step": 20,
         "val_interval": 10000,
         "save_interval": 500,
-        "worker_num": 8,
+        "worker_num": 1,
         'random_seed': 6033,
     }
     def _init_dataset(self):
