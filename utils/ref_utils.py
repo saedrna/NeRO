@@ -30,7 +30,11 @@ def assoc_legendre_coeff(l, m, k):
 
 
 def sph_harm_coeff(l, m, k):
-  """Compute spherical harmonic coefficients."""
+  """
+  Compute spherical harmonic coefficients.
+  s.a. https://en.wikipedia.org/wiki/Spherical_harmonics#Conventions
+
+  """
   return (np.sqrt(
       (2.0 * l + 1.0) * np.math.factorial(l - m) /
       (4.0 * np.pi * np.math.factorial(l + m))) * assoc_legendre_coeff(l, m, k))
@@ -67,7 +71,14 @@ def generate_ide_fn(deg_view):
     """
     if deg_view > 5:
         raise ValueError('Only deg_view of at most 5 is numerically stable.')
-
+    # (l, m) pair for Y_l^m of SH basis
+    # order 1 has (1+1)
+    # order 2 has (2+1)
+    # order 3 has (4+1)
+    # order 4 has (8+1)
+    # order 5 has (16+1)
+    # Fig 3. s.a https://arxiv.org/abs/2112.03907
+    # also see Precomputed radiance transfer for real-time rendering in dynamic, low-frequency lighting environments
     ml_array = get_ml_array(deg_view)
     l_max = 2**(deg_view - 1)
 
@@ -108,7 +119,9 @@ def generate_ide_fn(deg_view):
 
         # Apply attenuation function using the von Mises-Fisher distribution
         # concentration parameter, kappa.
+        # Eq. 8, s.a. https://arxiv.org/abs/2112.03907
         sigma = 0.5 * ml_array[1, :] * (ml_array[1, :] + 1)
+        # Eq. 7
         ide = sph_harms * torch.exp(-sigma * kappa_inv)
 
         # Split into real and imaginary parts and return
